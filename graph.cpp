@@ -13,7 +13,9 @@
 #include <vector>
 #include <utility>
 #include <stack>
-#include <stdlib.h>
+#include <queue>
+
+
 using namespace std;
 
 
@@ -29,7 +31,7 @@ class Graph
         list <pair<int, int>> *m_adjacency_list;
         
         // util for dfs 
-        void recursive_dfs (int vertex, vector<bool> &visited_list)
+        void recursive_dft (int vertex, vector<bool> &visited_list)
         {
             // mark current as visited
 
@@ -41,12 +43,12 @@ class Graph
             {
                 if (!visited_list[(*it).first])
                 {
-                    recursive_dfs((*it).first, visited_list);
+                    recursive_dft((*it).first, visited_list);
                 }
             }
         }
         
-        bool is_adjecent_vertices_non_visited (stack<int> &stack, vector<bool> &visited_list, int &found_vertex)
+        bool is_adjecent_vertices_non_visited (const stack<int> &stack, const vector<bool> &visited_list, int &found_vertex)
         {
             bool found = false;
             // get top element on stack
@@ -69,6 +71,7 @@ class Graph
             
             return found;
         }
+        
         
         
     public:
@@ -98,19 +101,13 @@ class Graph
             }
         }
         
-        void bfs (int vertex)
-        {
-        }
-        
-       
-            
-        void dfs (int vertex)
+        void dft (int vertex)
         {
             
             if (vertex >= m_vertices || vertex < 0)
             {
                 // THROW exception
-                cout <<"out of index dfs " << '\n';
+                cout <<"out of index dft " << '\n';
                 return ;
             } 
             vector<bool> visited_list(m_vertices);
@@ -119,7 +116,7 @@ class Graph
                 visited_list[i] = false;
             }
             
-            recursive_dfs(vertex, visited_list);
+            recursive_dft(vertex, visited_list);
             cout << '\n';
         }
         
@@ -127,16 +124,16 @@ class Graph
        
                 
                 
-        void iter_dfs (int vertex)
+        void iter_dft (int vertex)
         {
            /*
-             * Recursive version
+             * Iterative  version
              */
            
            if (vertex >= m_vertices || vertex < 0)
            {
                 // THROW exception
-                cout <<"out of index dfs " << '\n';
+                cout <<"out of index dft " << '\n';
                 return ;
            } 
             
@@ -171,6 +168,52 @@ class Graph
                
         }
         
+        
+        void bft (int vertex)
+        {
+            /*
+            * Iterative  version
+            */
+           
+           if (vertex >= m_vertices || vertex < 0)
+           {
+                // THROW exception
+                cout <<"out of index bft " << '\n';
+                return ;
+           } 
+            
+           queue<int> g_queue;
+           vector<bool> visited_list(m_vertices);
+           for (int i = 0; i < m_vertices; ++i)
+           {
+               visited_list[i] = false;
+           }
+           // push vertex onto stack
+           g_queue.push(vertex);
+           visited_list[vertex] = true;
+           cout << vertex <<" ";
+           while (!g_queue.empty())
+           {
+               int front_q = g_queue.front();
+               g_queue.pop();
+               // Get all unvisited adjacent to front_q
+               list <pair<int, int>>::const_iterator it;
+               for (it = m_adjacency_list[front_q].begin(); it != m_adjacency_list[front_q].end(); ++it)
+               {
+                    if (!visited_list[(*it).first])
+                    {
+                        // mark as visited 
+                        visited_list[(*it).first] = true,
+                        cout << (*it).first <<" ";
+                        g_queue.push( (*it).first );
+                    }
+                }
+           }
+           cout << "\n";
+        }
+        
+       
+            
                 
         bool isConnected()
         {
@@ -198,9 +241,13 @@ int main()
   
     // apply dfs
     cout <<"Recursive DFS "<<'\n';
-    g.dfs(7);
+    g.dft(0);
     cout <<"Iterative  DFS "<<'\n';
-    g.iter_dfs(7);
+    g.iter_dft(0);
+//     g.iter_dft(9);
+    cout <<"Iterative  BFS "<<'\n';
+    g.bft(0);
+    g.bft(-10);
     return 0;
     
     
